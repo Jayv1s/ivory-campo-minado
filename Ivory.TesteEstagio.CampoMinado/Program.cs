@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Ivory.TesteEstagio.CampoMinado
 {
@@ -10,14 +11,17 @@ namespace Ivory.TesteEstagio.CampoMinado
             Console.WriteLine("Início do jogo\n=========");
             Console.WriteLine(campoMinado.Tabuleiro);
             // Realize sua codificação a partir deste ponto, boa sorte!
-
+            //string tabuleiroSemQuebrarLinhas = Regex.Replace(campoMinado.Tabuleiro, @"\t|\n|\r", "");
+            List<int> posicaoBombas = new List<int>();
             int tamanho = campoMinado.Tabuleiro.Length;
+            int count = 0;
+            int i = 0;
             char cima, baixo;
             char esquerda, direita;
             char diagonalSupEsq, diagonalSupDir;
             char diagonalInfEsq, diagonalInfDir;
 
-            for (int i = 0; i < tamanho; i++)
+            do
             {
                 char posicaoAtual = campoMinado.Tabuleiro[i];
 
@@ -81,6 +85,11 @@ namespace Ivory.TesteEstagio.CampoMinado
                             diagonalInfDir = campoMinado.Tabuleiro[i + 12];
                             diagonalSupDir = ' ';
                         }
+                        else
+                        {
+                            diagonalSupDir = campoMinado.Tabuleiro[i - 10];
+                            diagonalInfDir = campoMinado.Tabuleiro[i + 12];
+                        }
                     }
                     else if (direita == '\r')
                     {
@@ -89,77 +98,84 @@ namespace Ivory.TesteEstagio.CampoMinado
 
                         if (baixo == ' ')
                         {
-                            diagonalSupEsq = campoMinado.Tabuleiro[i - 10];
+                            diagonalSupEsq = campoMinado.Tabuleiro[i - 12];
                             diagonalInfEsq = ' ';
                         }
                         else if (cima == ' ')
                         {
-                            diagonalInfEsq = campoMinado.Tabuleiro[i + 12];
+                            diagonalInfEsq = campoMinado.Tabuleiro[i + 10];
                             diagonalSupEsq = ' ';
                         }
+                        else
+                        {
+                            diagonalInfEsq = campoMinado.Tabuleiro[i + 10];
+                            diagonalSupEsq = campoMinado.Tabuleiro[i - 12];
+
+                        }
                     }
-                    else 
+                    else
                     {
                         if (baixo == ' ')
                         {
-                            diagonalSupEsq = campoMinado.Tabuleiro[i - 10];
+                            diagonalSupEsq = campoMinado.Tabuleiro[i - 12];
                             diagonalInfEsq = ' ';
                             diagonalInfDir = ' ';
                         }
                         else if (cima == ' ')
                         {
-                            diagonalInfEsq = campoMinado.Tabuleiro[i + 12];
+                            diagonalInfEsq = campoMinado.Tabuleiro[i + 10];
                             diagonalSupEsq = ' ';
                             diagonalSupDir = ' ';
                         }
                         else
                         {
-                            diagonalInfDir = campoMinado.Tabuleiro[i - 10];
-                            diagonalInfEsq = campoMinado.Tabuleiro[i - 12];
-                            diagonalSupDir = campoMinado.Tabuleiro[i + 10];
-                            diagonalSupEsq = campoMinado.Tabuleiro[i + 12];
+                            diagonalInfDir = campoMinado.Tabuleiro[i + 12];
+                            diagonalInfEsq = campoMinado.Tabuleiro[i + 10];
+
+                            diagonalSupDir = campoMinado.Tabuleiro[i - 10];
+                            diagonalSupEsq = campoMinado.Tabuleiro[i - 12];
                         }
                     }
+
+                    //switch (posicaoAtual)
+                    //{
+                    //    case '-':
+                    //        if( !posicaoBombas.Contains(i) )
+                    //        {
+                    //            int indexNaMatriz = i - count;
+
+                    //            int linha = (int)(indexNaMatriz / 9);
+                    //            int coluna = indexNaMatriz % 9;
+
+                    //            campoMinado.Abrir(linha, coluna);
+                    //        }
+                    //        break;
+
+                    //    case '1':
+                    //        if(cima == '-')
+                    //        {
+
+                    //        }
+                    //        break;
+
+                    //    //case '2':
+                    //    //    break;
+
+                    //    //case '3':
+                    //    //    break;
+
+                    //    //case '-':
+                    //    //    break;
+                    //    default:
+                    //        break;
+                    //}
                 }
+                else
+                    count++;
+                i++;
+            } while (i < tamanho && campoMinado.JogoStatus == 0);
 
-            }
-
-
-
-            //AnalisaJogo(campoMinado, tamanho);
             Console.ReadKey();
-
         }
-
-        //static void AnalisaJogo(CampoMinado MeuJogo, int tamanho)
-        //{
-
-        //    if(MeuJogo.JogoStatus == 0)
-        //    {
-        //        switch (posicaoAtual)
-        //        {
-        //            case '3':
-        //                break;
-
-        //            case '2':
-        //                break;
-
-        //            case '1':
-        //                break;
-
-        //            case '0':
-        //                break;
-
-        //            case '-':
-        //                break;
-
-        //            case ' ':
-        //                break;
-
-        //            default:
-        //                break;
-        //        }
-        //    }
-        //}
     }
 }
