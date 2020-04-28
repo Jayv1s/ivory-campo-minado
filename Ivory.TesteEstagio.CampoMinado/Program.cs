@@ -11,19 +11,43 @@ namespace Ivory.TesteEstagio.CampoMinado
             Console.WriteLine("Início do jogo\n=========");
             Console.WriteLine(campoMinado.Tabuleiro);
             // Realize sua codificação a partir deste ponto, boa sorte!
-            //string tabuleiroSemQuebrarLinhas = Regex.Replace(campoMinado.Tabuleiro, @"\t|\n|\r", "");
+            List<int> casaFechadas = new List<int>();
             List<int> posicaoBombas = new List<int>();
+            int quantidadeCasasFechadas = 0;
             int tamanho = campoMinado.Tabuleiro.Length;
             int count = 0;
             int i = 0;
-            char cima, baixo;
-            char esquerda, direita;
-            char diagonalSupEsq, diagonalSupDir;
-            char diagonalInfEsq, diagonalInfDir;
+            char cima =' ', baixo = ' ';
+            char esquerda = ' ', direita = ' ';
+            char diagonalSupEsq = ' ', diagonalSupDir = ' ';
+            char diagonalInfEsq = ' ', diagonalInfDir = ' ';
 
             do
             {
                 char posicaoAtual = campoMinado.Tabuleiro[i];
+
+                //debug
+                //Console.Clear();
+
+                //Console.WriteLine(campoMinado.Tabuleiro);
+                //Console.WriteLine("\n ------------- \n");
+                //Console.WriteLine("Posição atual: " + posicaoAtual + " || Index real: " + (i - count) + " || Index falso: " + i);
+
+                //Console.WriteLine("\n ------Vizinhos------- \n");
+
+
+                //Console.WriteLine(" Esquerda: " + esquerda);
+                //Console.WriteLine(" Direita: " + direita);
+
+                //Console.WriteLine("\n Cima: " + cima);
+                //Console.WriteLine(" Baixo: " + baixo);
+
+                //Console.WriteLine("\n Diagonal Sup. Esquerda: " + diagonalSupEsq);
+                //Console.WriteLine(" Diagonal Sup. Direita: " + diagonalSupDir);
+
+                //Console.WriteLine("\n Diagonal Inferior Esquerda: " + diagonalInfEsq);
+                //Console.WriteLine("\n Diagonal Inferior Direita: " + diagonalInfDir);
+                //debug
 
                 if (!(posicaoAtual == '\n' || posicaoAtual == '\r'))
                 {
@@ -70,17 +94,17 @@ namespace Ivory.TesteEstagio.CampoMinado
                         esquerda = campoMinado.Tabuleiro[i - 1];
                     }
 
-                    if (esquerda == '\n')
+                    if (esquerda == '\n') // se tiver borda no lado esquerdo
                     {
                         diagonalSupEsq = '\n';
                         diagonalInfEsq = '\n';
 
-                        if (baixo == ' ')
+                        if (baixo == ' ') // se tiver borda no lado esquerdo e em baixo
                         {
                             diagonalSupDir = campoMinado.Tabuleiro[i - 10];
                             diagonalInfDir = ' ';
                         }
-                        else if (cima == ' ')
+                        else if (cima == ' ')// se tiver borda no lado esquerdo e em cima
                         {
                             diagonalInfDir = campoMinado.Tabuleiro[i + 12];
                             diagonalSupDir = ' ';
@@ -91,17 +115,17 @@ namespace Ivory.TesteEstagio.CampoMinado
                             diagonalInfDir = campoMinado.Tabuleiro[i + 12];
                         }
                     }
-                    else if (direita == '\r')
+                    else if (direita == '\r') // se tiver borda no lado direito
                     {
                         diagonalSupDir = '\r';
                         diagonalInfDir = '\r';
 
-                        if (baixo == ' ')
+                        if (baixo == ' ') // se tiver borda no lado direito e em baixo
                         {
                             diagonalSupEsq = campoMinado.Tabuleiro[i - 12];
                             diagonalInfEsq = ' ';
                         }
-                        else if (cima == ' ')
+                        else if (cima == ' ') // se tiver borda no lado direito e em cima
                         {
                             diagonalInfEsq = campoMinado.Tabuleiro[i + 10];
                             diagonalSupEsq = ' ';
@@ -110,19 +134,21 @@ namespace Ivory.TesteEstagio.CampoMinado
                         {
                             diagonalInfEsq = campoMinado.Tabuleiro[i + 10];
                             diagonalSupEsq = campoMinado.Tabuleiro[i - 12];
-
                         }
                     }
                     else
                     {
-                        if (baixo == ' ')
+                        if (baixo == ' ') // se tiver borda em baixo
                         {
                             diagonalSupEsq = campoMinado.Tabuleiro[i - 12];
+                            diagonalSupDir = campoMinado.Tabuleiro[i - 10];
+
                             diagonalInfEsq = ' ';
                             diagonalInfDir = ' ';
                         }
-                        else if (cima == ' ')
+                        else if (cima == ' ') // se tiver borda em cima
                         {
+                            diagonalInfDir = campoMinado.Tabuleiro[i + 12];
                             diagonalInfEsq = campoMinado.Tabuleiro[i + 10];
                             diagonalSupEsq = ' ';
                             diagonalSupDir = ' ';
@@ -136,44 +162,295 @@ namespace Ivory.TesteEstagio.CampoMinado
                             diagonalSupEsq = campoMinado.Tabuleiro[i - 12];
                         }
                     }
-
-                    //switch (posicaoAtual)
-                    //{
-                    //    case '-':
-                    //        if( !posicaoBombas.Contains(i) )
-                    //        {
-                    //            int indexNaMatriz = i - count;
-
-                    //            int linha = (int)(indexNaMatriz / 9);
-                    //            int coluna = indexNaMatriz % 9;
-
-                    //            campoMinado.Abrir(linha, coluna);
-                    //        }
-                    //        break;
-
-                    //    case '1':
-                    //        if(cima == '-')
-                    //        {
-
-                    //        }
-                    //        break;
-
-                    //    //case '2':
-                    //    //    break;
-
-                    //    //case '3':
-                    //    //    break;
-
-                    //    //case '-':
-                    //    //    break;
-                    //    default:
-                    //        break;
-                    //}
                 }
                 else
                     count++;
-                i++;
+
+                switch (posicaoAtual)
+                {
+                    case '-':
+                        if (!posicaoBombas.Contains(i -count))
+                        {
+                            int indexNaMatriz = (i - count);
+
+                            int linha = (int)(indexNaMatriz / 9) + 1;
+                            int coluna = (indexNaMatriz % 9) + 1;
+
+                            campoMinado.Abrir(linha, coluna);
+                            i = 0;
+                            count = 0;
+                        }
+                        else
+                            i++;
+
+                        break;
+
+                    case '1':
+                        quantidadeCasasFechadas = 0;
+                        casaFechadas = new List<int>();
+                        if(cima == '-')
+                        {
+                            casaFechadas.Add((i - count) - 9 );
+                            quantidadeCasasFechadas++;
+                        }
+                        if (baixo == '-')
+                        {
+                            casaFechadas.Add((i - count) + 9);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (esquerda == '-')
+                        {
+                            casaFechadas.Add((i - count)  - 1);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (direita == '-')
+                        {
+                            casaFechadas.Add((i - count) + 1);
+                            quantidadeCasasFechadas++;
+                        }
+
+
+                        if (diagonalInfDir == '-')
+                        {
+                            casaFechadas.Add((i - count) + 10);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (diagonalInfEsq == '-')
+                        {
+                            casaFechadas.Add((i - count) + 8);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (diagonalSupDir == '-')
+                        {
+                            casaFechadas.Add((i - count) - 8 );
+                            quantidadeCasasFechadas++;
+                        }
+                        if (diagonalSupEsq == '-')
+                        {
+                            casaFechadas.Add((i - count) - 10);
+                            quantidadeCasasFechadas++;
+                        }
+
+                        if(quantidadeCasasFechadas == 1)
+                        {
+                            posicaoBombas.Add(casaFechadas[0]);
+                        }
+                        else
+                        {
+                            foreach (var casa in casaFechadas)
+                            {
+                                if (posicaoBombas.Contains(casa))
+                                {
+                                    casaFechadas.Remove(casa);
+                                    foreach (var seguro in casaFechadas)
+                                    {
+                                        int linha = (int)(seguro / 9) + 1;
+                                        int coluna = (seguro % 9) + 1;
+
+                                        campoMinado.Abrir(linha, coluna);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+
+                        i++;
+                        break;
+
+                    case '2':
+                        quantidadeCasasFechadas = 0;
+                        casaFechadas = new List<int>();
+                        if (cima == '-')
+                        {
+                            casaFechadas.Add((i - count) - 9);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (baixo == '-')
+                        {
+                            casaFechadas.Add((i - count) + 9);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (esquerda == '-')
+                        {
+                            casaFechadas.Add((i - count) - 1);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (direita == '-')
+                        {
+                            casaFechadas.Add((i - count) + 1);
+                            quantidadeCasasFechadas++;
+                        }
+
+
+                        if (diagonalInfDir == '-')
+                        {
+                            casaFechadas.Add((i - count) + 10);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (diagonalInfEsq == '-')
+                        {
+                            casaFechadas.Add((i - count) + 8);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (diagonalSupDir == '-')
+                        {
+                            casaFechadas.Add((i - count) - 8);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (diagonalSupEsq == '-')
+                        {
+                            casaFechadas.Add((i - count) - 10);
+                            quantidadeCasasFechadas++;
+                        }
+
+                        if (quantidadeCasasFechadas == 2)
+                        {
+                            foreach (var casaVaga in casaFechadas)
+                            {
+                                if (!posicaoBombas.Contains(casaVaga))
+                                {
+                                    posicaoBombas.Add(casaVaga);
+                                }
+                            }
+                        }
+                       
+                        i++;
+                        break;
+
+                    case '3':
+                        quantidadeCasasFechadas = 0;
+                        casaFechadas = new List<int>();
+
+                        if (cima == '-')
+                        {
+                            casaFechadas.Add((i - count) - 9);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (baixo == '-')
+                        {
+                            casaFechadas.Add((i - count) + 9);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (esquerda == '-')
+                        {
+                            casaFechadas.Add((i - count) - 1);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (direita == '-')
+                        {
+                            casaFechadas.Add((i - count) + 1);
+                            quantidadeCasasFechadas++;
+                        }
+
+
+                        if (diagonalInfDir == '-')
+                        {
+                            casaFechadas.Add((i - count) + 10);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (diagonalInfEsq == '-')
+                        {
+                            casaFechadas.Add((i - count) + 8);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (diagonalSupDir == '-')
+                        {
+                            casaFechadas.Add((i - count) - 8);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (diagonalSupEsq == '-')
+                        {
+                            casaFechadas.Add((i - count) - 10);
+                            quantidadeCasasFechadas++;
+                        }
+
+                        if (quantidadeCasasFechadas == 3)
+                        {
+                            foreach (var casaVaga in casaFechadas)
+                            {
+                                if( !posicaoBombas.Contains(casaVaga) )
+                                {
+                                    posicaoBombas.Add(casaVaga);
+                                }
+                            }
+                        }
+
+                            i++;
+                        break;
+
+                    case '4':
+                        quantidadeCasasFechadas = 0;
+                        casaFechadas = new List<int>();
+
+                        if (cima == '-')
+                        {
+                            casaFechadas.Add((i - count) - 9);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (baixo == '-')
+                        {
+                            casaFechadas.Add((i - count) + 9);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (esquerda == '-')
+                        {
+                            casaFechadas.Add((i - count) - 1);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (direita == '-')
+                        {
+                            casaFechadas.Add((i - count) + 1);
+                            quantidadeCasasFechadas++;
+                        }
+
+
+                        if (diagonalInfDir == '-')
+                        {
+                            casaFechadas.Add((i - count) + 10);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (diagonalInfEsq == '-')
+                        {
+                            casaFechadas.Add((i - count) + 8);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (diagonalSupDir == '-')
+                        {
+                            casaFechadas.Add((i - count) - 8);
+                            quantidadeCasasFechadas++;
+                        }
+                        if (diagonalSupEsq == '-')
+                        {
+                            casaFechadas.Add((i - count) - 10);
+                            quantidadeCasasFechadas++;
+                        }
+
+                        if (quantidadeCasasFechadas == 4)
+                        {
+                            foreach (var casaVaga in casaFechadas)
+                            {
+                                if (!posicaoBombas.Contains(casaVaga))
+                                {
+                                    posicaoBombas.Add(casaVaga);
+                                }
+                            }
+                        }
+
+                        i++;
+                        break;
+
+                    default:
+                        i++;
+                        break;
+                }
             } while (i < tamanho && campoMinado.JogoStatus == 0);
+
+            Console.Clear();
+            Console.WriteLine(campoMinado.JogoStatus);
+
+            Console.WriteLine("\n \n ");
+
+            Console.WriteLine(campoMinado.Tabuleiro);
 
             Console.ReadKey();
         }
