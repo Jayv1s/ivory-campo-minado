@@ -11,9 +11,8 @@ namespace Ivory.TesteEstagio.CampoMinado
             Console.WriteLine("Início do jogo\n=========");
             Console.WriteLine(campoMinado.Tabuleiro);
             // Realize sua codificação a partir deste ponto, boa sorte!
-            List<int> casaFechadas = new List<int>();
+
             List<int> posicaoBombas = new List<int>();
-            int quantidadeCasasFechadas = 0;
             int tamanho = campoMinado.Tabuleiro.Length;
             int count = 0;
             int i = 0;
@@ -25,30 +24,6 @@ namespace Ivory.TesteEstagio.CampoMinado
             do
             {
                 char posicaoAtual = campoMinado.Tabuleiro[i];
-
-                //debug
-                //Console.Clear();
-
-                //Console.WriteLine(campoMinado.Tabuleiro);
-                //Console.WriteLine("\n ------------- \n");
-                //Console.WriteLine("Posição atual: " + posicaoAtual + " || Index real: " + (i - count) + " || Index falso: " + i);
-
-                //Console.WriteLine("\n ------Vizinhos------- \n");
-
-
-                //Console.WriteLine(" Esquerda: " + esquerda);
-                //Console.WriteLine(" Direita: " + direita);
-
-                //Console.WriteLine("\n Cima: " + cima);
-                //Console.WriteLine(" Baixo: " + baixo);
-
-                //Console.WriteLine("\n Diagonal Sup. Esquerda: " + diagonalSupEsq);
-                //Console.WriteLine(" Diagonal Sup. Direita: " + diagonalSupDir);
-
-                //Console.WriteLine("\n Diagonal Inferior Esquerda: " + diagonalInfEsq);
-                //Console.WriteLine("\n Diagonal Inferior Direita: " + diagonalInfDir);
-                //debug
-
                 if (!(posicaoAtual == '\n' || posicaoAtual == '\r'))
                 {
                     if (i >= 0 && i <= 10)//se for a primeira linha
@@ -166,282 +141,115 @@ namespace Ivory.TesteEstagio.CampoMinado
                 else
                     count++;
 
-                switch (posicaoAtual)
+                if(posicaoAtual != '\n' && posicaoAtual != '\r' && posicaoAtual != '0' && posicaoAtual != '-')
                 {
-                    case '-':
-                        if (!posicaoBombas.Contains(i -count))
+                    bool bombaEncontrada = false;
+                    int bombasVizinhas = 0;
+                    int quantidadeCasasFechadas = 0;
+                    List<int> casaFechadas = new List<int>();
+                    if (cima == '-')
+                    {
+                        casaFechadas.Add((i - count) - 9);
+                        quantidadeCasasFechadas++;
+                    }
+                    if (baixo == '-')
+                    {
+                        casaFechadas.Add((i - count) + 9);
+                        quantidadeCasasFechadas++;
+                    }
+                    if (esquerda == '-')
+                    {
+                        casaFechadas.Add((i - count) - 1);
+                        quantidadeCasasFechadas++;
+                    }
+                    if (direita == '-')
+                    {
+                        casaFechadas.Add((i - count) + 1);
+                        quantidadeCasasFechadas++;
+                    }
+
+
+                    if (diagonalInfDir == '-')
+                    {
+                        casaFechadas.Add((i - count) + 10);
+                        quantidadeCasasFechadas++;
+                    }
+                    if (diagonalInfEsq == '-')
+                    {
+                        casaFechadas.Add((i - count) + 8);
+                        quantidadeCasasFechadas++;
+                    }
+                    if (diagonalSupDir == '-')
+                    {
+                        casaFechadas.Add((i - count) - 8);
+                        quantidadeCasasFechadas++;
+                    }
+                    if (diagonalSupEsq == '-')
+                    {
+                        casaFechadas.Add((i - count) - 10);
+                        quantidadeCasasFechadas++;
+                    }
+
+                    int valorCasaAtual = int.Parse(posicaoAtual.ToString());
+
+                    if (quantidadeCasasFechadas == valorCasaAtual)
+                    {
+                        foreach (var casaVaga in casaFechadas)
                         {
-                            int indexNaMatriz = (i - count);
+                            if (!posicaoBombas.Contains(casaVaga))
+                            {
+                                bombaEncontrada = true;
+                                posicaoBombas.Add(casaVaga);
+                            }
 
-                            int linha = (int)(indexNaMatriz / 9) + 1;
-                            int coluna = (indexNaMatriz % 9) + 1;
+                        }
 
-                            campoMinado.Abrir(linha, coluna);
+                        if(bombaEncontrada)
+                        {
                             i = 0;
                             count = 0;
                         }
                         else
+                        {
                             i++;
-
-                        break;
-
-                    case '1':
-                        quantidadeCasasFechadas = 0;
-                        casaFechadas = new List<int>();
-                        if(cima == '-')
-                        {
-                            casaFechadas.Add((i - count) - 9 );
-                            quantidadeCasasFechadas++;
-                        }
-                        if (baixo == '-')
-                        {
-                            casaFechadas.Add((i - count) + 9);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (esquerda == '-')
-                        {
-                            casaFechadas.Add((i - count)  - 1);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (direita == '-')
-                        {
-                            casaFechadas.Add((i - count) + 1);
-                            quantidadeCasasFechadas++;
                         }
 
-
-                        if (diagonalInfDir == '-')
+                    }
+                    else if(quantidadeCasasFechadas > valorCasaAtual)
+                    {
+                        foreach (var bombas in posicaoBombas)
                         {
-                            casaFechadas.Add((i - count) + 10);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (diagonalInfEsq == '-')
-                        {
-                            casaFechadas.Add((i - count) + 8);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (diagonalSupDir == '-')
-                        {
-                            casaFechadas.Add((i - count) - 8 );
-                            quantidadeCasasFechadas++;
-                        }
-                        if (diagonalSupEsq == '-')
-                        {
-                            casaFechadas.Add((i - count) - 10);
-                            quantidadeCasasFechadas++;
+                            if(casaFechadas.Contains(bombas))
+                            {
+                                quantidadeCasasFechadas--;
+                                bombasVizinhas++;
+                                casaFechadas.Remove(bombas);
+                            }
                         }
 
-                        if(quantidadeCasasFechadas == 1)
+                        if(bombasVizinhas == valorCasaAtual && quantidadeCasasFechadas > 0)
                         {
-                            posicaoBombas.Add(casaFechadas[0]);
+                            foreach (var casaSegura in casaFechadas)
+                            {
+                                int linha = (int)(casaSegura / 9) + 1;
+                                int coluna = (casaSegura % 9) + 1;
+                                campoMinado.Abrir(linha, coluna);
+                                Console.Clear();
+                                Console.WriteLine(campoMinado.Tabuleiro);
+                                Console.ReadKey();
+                            }
+                            i = 0;
+                            count = 0;
                         }
                         else
                         {
-                            foreach (var casa in casaFechadas)
-                            {
-                                if (posicaoBombas.Contains(casa))
-                                {
-                                    casaFechadas.Remove(casa);
-                                    foreach (var seguro in casaFechadas)
-                                    {
-                                        int linha = (int)(seguro / 9) + 1;
-                                        int coluna = (seguro % 9) + 1;
-
-                                        campoMinado.Abrir(linha, coluna);
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-
-                        i++;
-                        break;
-
-                    case '2':
-                        quantidadeCasasFechadas = 0;
-                        casaFechadas = new List<int>();
-                        if (cima == '-')
-                        {
-                            casaFechadas.Add((i - count) - 9);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (baixo == '-')
-                        {
-                            casaFechadas.Add((i - count) + 9);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (esquerda == '-')
-                        {
-                            casaFechadas.Add((i - count) - 1);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (direita == '-')
-                        {
-                            casaFechadas.Add((i - count) + 1);
-                            quantidadeCasasFechadas++;
-                        }
-
-
-                        if (diagonalInfDir == '-')
-                        {
-                            casaFechadas.Add((i - count) + 10);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (diagonalInfEsq == '-')
-                        {
-                            casaFechadas.Add((i - count) + 8);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (diagonalSupDir == '-')
-                        {
-                            casaFechadas.Add((i - count) - 8);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (diagonalSupEsq == '-')
-                        {
-                            casaFechadas.Add((i - count) - 10);
-                            quantidadeCasasFechadas++;
-                        }
-
-                        if (quantidadeCasasFechadas == 2)
-                        {
-                            foreach (var casaVaga in casaFechadas)
-                            {
-                                if (!posicaoBombas.Contains(casaVaga))
-                                {
-                                    posicaoBombas.Add(casaVaga);
-                                }
-                            }
-                        }
-                       
-                        i++;
-                        break;
-
-                    case '3':
-                        quantidadeCasasFechadas = 0;
-                        casaFechadas = new List<int>();
-
-                        if (cima == '-')
-                        {
-                            casaFechadas.Add((i - count) - 9);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (baixo == '-')
-                        {
-                            casaFechadas.Add((i - count) + 9);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (esquerda == '-')
-                        {
-                            casaFechadas.Add((i - count) - 1);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (direita == '-')
-                        {
-                            casaFechadas.Add((i - count) + 1);
-                            quantidadeCasasFechadas++;
-                        }
-
-
-                        if (diagonalInfDir == '-')
-                        {
-                            casaFechadas.Add((i - count) + 10);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (diagonalInfEsq == '-')
-                        {
-                            casaFechadas.Add((i - count) + 8);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (diagonalSupDir == '-')
-                        {
-                            casaFechadas.Add((i - count) - 8);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (diagonalSupEsq == '-')
-                        {
-                            casaFechadas.Add((i - count) - 10);
-                            quantidadeCasasFechadas++;
-                        }
-
-                        if (quantidadeCasasFechadas == 3)
-                        {
-                            foreach (var casaVaga in casaFechadas)
-                            {
-                                if( !posicaoBombas.Contains(casaVaga) )
-                                {
-                                    posicaoBombas.Add(casaVaga);
-                                }
-                            }
-                        }
-
                             i++;
-                        break;
-
-                    case '4':
-                        quantidadeCasasFechadas = 0;
-                        casaFechadas = new List<int>();
-
-                        if (cima == '-')
-                        {
-                            casaFechadas.Add((i - count) - 9);
-                            quantidadeCasasFechadas++;
                         }
-                        if (baixo == '-')
-                        {
-                            casaFechadas.Add((i - count) + 9);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (esquerda == '-')
-                        {
-                            casaFechadas.Add((i - count) - 1);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (direita == '-')
-                        {
-                            casaFechadas.Add((i - count) + 1);
-                            quantidadeCasasFechadas++;
-                        }
-
-
-                        if (diagonalInfDir == '-')
-                        {
-                            casaFechadas.Add((i - count) + 10);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (diagonalInfEsq == '-')
-                        {
-                            casaFechadas.Add((i - count) + 8);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (diagonalSupDir == '-')
-                        {
-                            casaFechadas.Add((i - count) - 8);
-                            quantidadeCasasFechadas++;
-                        }
-                        if (diagonalSupEsq == '-')
-                        {
-                            casaFechadas.Add((i - count) - 10);
-                            quantidadeCasasFechadas++;
-                        }
-
-                        if (quantidadeCasasFechadas == 4)
-                        {
-                            foreach (var casaVaga in casaFechadas)
-                            {
-                                if (!posicaoBombas.Contains(casaVaga))
-                                {
-                                    posicaoBombas.Add(casaVaga);
-                                }
-                            }
-                        }
-
-                        i++;
-                        break;
-
-                    default:
-                        i++;
-                        break;
+                    }
+                }
+                else
+                {
+                    i++;
                 }
             } while (i < tamanho && campoMinado.JogoStatus == 0);
 
