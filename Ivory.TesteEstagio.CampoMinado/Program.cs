@@ -3,6 +3,188 @@ using System.Collections.Generic;
 
 namespace Ivory.TesteEstagio.CampoMinado
 {
+    class Vizinho
+    {
+        public char cima, baixo;
+        public char esquerda, direita;
+        public char diagonalSupEsq, diagonalSupDir;
+        public char diagonalInfEsq, diagonalInfDir;
+
+        public Vizinho()
+        {
+            cima = ' ';
+            baixo = ' ';
+
+            esquerda = ' ';
+            direita = ' ';
+
+            diagonalSupEsq = ' ';
+            diagonalSupDir = ' ';
+
+            diagonalInfEsq = ' ';
+            diagonalInfDir = ' ';
+        }
+    }
+
+    class Operacoes
+    {
+        public Vizinho IdentificarVizinhos(int indexAtual, char posicaoAtual, string tabuleiro)
+        {
+            Vizinho vizinho = new Vizinho();
+
+
+            if (indexAtual >= 0 && indexAtual <= 10)//se for a primeira linha
+            {
+                if (indexAtual == 0)
+                {
+                    vizinho.esquerda = '\n';
+                }
+                else
+                {
+                    vizinho.esquerda = tabuleiro[indexAtual - 1];
+                }
+                vizinho.cima = ' ';
+                vizinho.diagonalSupEsq = ' ';
+                vizinho.diagonalSupDir = ' ';
+
+                vizinho.direita = tabuleiro[indexAtual + 1];
+                vizinho.baixo = tabuleiro[indexAtual + 11];
+            }
+            else if (indexAtual >= 87 && indexAtual <= 96)//se for a ultima linha
+            {
+                if (indexAtual == 96)
+                {
+                    vizinho.direita = '\r';
+                }
+                else
+                {
+                    vizinho.direita = tabuleiro[indexAtual + 1];
+                }
+                vizinho.baixo = ' ';
+                vizinho.diagonalInfEsq = ' ';
+                vizinho.diagonalInfDir = ' ';
+
+                vizinho.esquerda = tabuleiro[indexAtual - 1];
+                vizinho.cima = tabuleiro[indexAtual - 11];
+            }
+            else
+            {
+                vizinho.cima = tabuleiro[indexAtual - 11];
+                vizinho.baixo = tabuleiro[indexAtual + 11];
+
+                vizinho.direita = tabuleiro[indexAtual + 1];
+                vizinho.esquerda = tabuleiro[indexAtual - 1];
+            }
+
+            if (vizinho.esquerda == '\n') // se tiver borda no lado esquerdo
+            {
+                vizinho.diagonalSupEsq = '\n';
+                vizinho.diagonalInfEsq = '\n';
+
+                if (vizinho.baixo == ' ') // se tiver borda no lado esquerdo e em baixo
+                {
+                    vizinho.diagonalSupDir = tabuleiro[indexAtual - 10];
+                    vizinho.diagonalInfDir = ' ';
+                }
+                else if (vizinho.cima == ' ')// se tiver borda no lado esquerdo e em cima
+                {
+                    vizinho.diagonalInfDir = tabuleiro[indexAtual + 12];
+                    vizinho.diagonalSupDir = ' ';
+                }
+                else
+                {
+                    vizinho.diagonalSupDir = tabuleiro[indexAtual - 10];
+                    vizinho.diagonalInfDir = tabuleiro[indexAtual + 12];
+                }
+            }
+            else if (vizinho.direita == '\r') // se tiver borda no lado direito
+            {
+                vizinho.diagonalSupDir = '\r';
+                vizinho.diagonalInfDir = '\r';
+
+                if (vizinho.baixo == ' ') // se tiver borda no lado direito e em baixo
+                {
+                    vizinho.diagonalSupEsq = tabuleiro[indexAtual - 12];
+                    vizinho.diagonalInfEsq = ' ';
+                }
+                else if (vizinho.cima == ' ') // se tiver borda no lado direito e em cima
+                {
+                    vizinho.diagonalInfEsq = tabuleiro[indexAtual + 10];
+                    vizinho.diagonalSupEsq = ' ';
+                }
+                else
+                {
+                    vizinho.diagonalInfEsq = tabuleiro[indexAtual + 10];
+                    vizinho.diagonalSupEsq = tabuleiro[indexAtual - 12];
+                }
+            }
+            else
+            {
+                if (vizinho.baixo == ' ') // se tiver borda em baixo
+                {
+                    vizinho.diagonalSupEsq = tabuleiro[indexAtual - 12];
+                    vizinho.diagonalSupDir = tabuleiro[indexAtual - 10];
+
+                    vizinho.diagonalInfEsq = ' ';
+                    vizinho.diagonalInfDir = ' ';
+                }
+                else if (vizinho.cima == ' ') // se tiver borda em cima
+                {
+                    vizinho.diagonalInfDir = tabuleiro[indexAtual + 12];
+                    vizinho.diagonalInfEsq = tabuleiro[indexAtual + 10];
+                    vizinho.diagonalSupEsq = ' ';
+                    vizinho.diagonalSupDir = ' ';
+                }
+                else
+                {
+                    vizinho.diagonalInfDir = tabuleiro[indexAtual + 12];
+                    vizinho.diagonalInfEsq = tabuleiro[indexAtual + 10];
+
+                    vizinho.diagonalSupDir = tabuleiro[indexAtual - 10];
+                    vizinho.diagonalSupEsq = tabuleiro[indexAtual - 12];
+                }
+            }
+
+            return vizinho;
+        }
+
+        public List<int> IdentificarVizinhosFechados(Vizinho vizinhosAtuais, int indexAtual, int bordas)
+        {
+            List<int> vizinhosFechadas = new List<int>();
+
+            if (vizinhosAtuais.cima == '-')
+                vizinhosFechadas.Add((indexAtual - bordas) - 9);
+
+            if (vizinhosAtuais.baixo == '-')
+                vizinhosFechadas.Add((indexAtual - bordas) + 9);
+
+            if (vizinhosAtuais.esquerda == '-')
+                vizinhosFechadas.Add((indexAtual - bordas) - 1);
+
+            if (vizinhosAtuais.direita == '-')
+                vizinhosFechadas.Add((indexAtual - bordas) + 1);
+
+            if (vizinhosAtuais.diagonalInfDir == '-')
+                vizinhosFechadas.Add((indexAtual - bordas) + 10);
+
+            if (vizinhosAtuais.diagonalInfEsq == '-')
+                vizinhosFechadas.Add((indexAtual - bordas) + 8);
+
+            if (vizinhosAtuais.diagonalSupDir == '-')
+                vizinhosFechadas.Add((indexAtual - bordas) - 8);
+
+            if (vizinhosAtuais.diagonalSupEsq == '-')
+                vizinhosFechadas.Add((indexAtual - bordas) - 10);
+
+
+            return vizinhosFechadas;
+        }
+
+        public void AnalisarVizinhosFechados()
+        {
+
+        }
+    }
     class Program
     {
         static void Main(string[] args)
@@ -12,253 +194,124 @@ namespace Ivory.TesteEstagio.CampoMinado
             Console.WriteLine(campoMinado.Tabuleiro);
             // Realize sua codificação a partir deste ponto, boa sorte!
 
-            List<int> posicaoBombas = new List<int>();
+            string tabuleiro = campoMinado.Tabuleiro;
+            int statusDoJogo = campoMinado.JogoStatus;
+
+            Operacoes minhasFuncoes = new Operacoes();
+            Vizinho vizinhosAtuais = new Vizinho();
+
+
+            List<int> bombasMarcadas = new List<int>();
+
+            List<int> vizinhosFechados = new List<int>();
+
+            bool bombaEncontrada;
+            int bombasVizinhas;
+            int quantidadeCasasFechadas;
+
             int tamanho = campoMinado.Tabuleiro.Length;
-            int count = 0;
-            int i = 0;
-            char cima =' ', baixo = ' ';
-            char esquerda = ' ', direita = ' ';
-            char diagonalSupEsq = ' ', diagonalSupDir = ' ';
-            char diagonalInfEsq = ' ', diagonalInfDir = ' ';
+            int bordas = 0;
+            int index = 0;
+
+            char posicaoAtual;
+            int valorCasaAtual;
+
 
             do
             {
-                char posicaoAtual = campoMinado.Tabuleiro[i];
+                bombaEncontrada = false;
+                bombasVizinhas = 0;
+
+                vizinhosAtuais = new Vizinho();
+                posicaoAtual = tabuleiro[index];
+                
+
+
                 if (!(posicaoAtual == '\n' || posicaoAtual == '\r'))
-                {
-                    if (i >= 0 && i <= 10)//se for a primeira linha
-                    {
-                        if (i == 0)
-                        {
-                            esquerda = '\n';
-                        }
-                        else
-                        {
-                            esquerda = campoMinado.Tabuleiro[i - 1];
-                        }
-                        cima = ' ';
-                        diagonalSupEsq = ' ';
-                        diagonalSupDir = ' ';
-
-                        direita = campoMinado.Tabuleiro[i + 1];
-                        baixo = campoMinado.Tabuleiro[i + 11];
-                    }
-                    else if (i >= 87 && i <= 96)//se for a ultima linha
-                    {
-                        if (i == 96)
-                        {
-                            direita = '\r';
-                        }
-                        else
-                        {
-                            direita = campoMinado.Tabuleiro[i + 1];
-                        }
-                        baixo = ' ';
-                        diagonalInfEsq = ' ';
-                        diagonalInfDir = ' ';
-
-                        esquerda = campoMinado.Tabuleiro[i - 1];
-                        cima = campoMinado.Tabuleiro[i - 11];
-                    }
-                    else
-                    {
-                        cima = campoMinado.Tabuleiro[i - 11];
-                        baixo = campoMinado.Tabuleiro[i + 11];
-
-                        direita = campoMinado.Tabuleiro[i + 1];
-                        esquerda = campoMinado.Tabuleiro[i - 1];
-                    }
-
-                    if (esquerda == '\n') // se tiver borda no lado esquerdo
-                    {
-                        diagonalSupEsq = '\n';
-                        diagonalInfEsq = '\n';
-
-                        if (baixo == ' ') // se tiver borda no lado esquerdo e em baixo
-                        {
-                            diagonalSupDir = campoMinado.Tabuleiro[i - 10];
-                            diagonalInfDir = ' ';
-                        }
-                        else if (cima == ' ')// se tiver borda no lado esquerdo e em cima
-                        {
-                            diagonalInfDir = campoMinado.Tabuleiro[i + 12];
-                            diagonalSupDir = ' ';
-                        }
-                        else
-                        {
-                            diagonalSupDir = campoMinado.Tabuleiro[i - 10];
-                            diagonalInfDir = campoMinado.Tabuleiro[i + 12];
-                        }
-                    }
-                    else if (direita == '\r') // se tiver borda no lado direito
-                    {
-                        diagonalSupDir = '\r';
-                        diagonalInfDir = '\r';
-
-                        if (baixo == ' ') // se tiver borda no lado direito e em baixo
-                        {
-                            diagonalSupEsq = campoMinado.Tabuleiro[i - 12];
-                            diagonalInfEsq = ' ';
-                        }
-                        else if (cima == ' ') // se tiver borda no lado direito e em cima
-                        {
-                            diagonalInfEsq = campoMinado.Tabuleiro[i + 10];
-                            diagonalSupEsq = ' ';
-                        }
-                        else
-                        {
-                            diagonalInfEsq = campoMinado.Tabuleiro[i + 10];
-                            diagonalSupEsq = campoMinado.Tabuleiro[i - 12];
-                        }
-                    }
-                    else
-                    {
-                        if (baixo == ' ') // se tiver borda em baixo
-                        {
-                            diagonalSupEsq = campoMinado.Tabuleiro[i - 12];
-                            diagonalSupDir = campoMinado.Tabuleiro[i - 10];
-
-                            diagonalInfEsq = ' ';
-                            diagonalInfDir = ' ';
-                        }
-                        else if (cima == ' ') // se tiver borda em cima
-                        {
-                            diagonalInfDir = campoMinado.Tabuleiro[i + 12];
-                            diagonalInfEsq = campoMinado.Tabuleiro[i + 10];
-                            diagonalSupEsq = ' ';
-                            diagonalSupDir = ' ';
-                        }
-                        else
-                        {
-                            diagonalInfDir = campoMinado.Tabuleiro[i + 12];
-                            diagonalInfEsq = campoMinado.Tabuleiro[i + 10];
-
-                            diagonalSupDir = campoMinado.Tabuleiro[i - 10];
-                            diagonalSupEsq = campoMinado.Tabuleiro[i - 12];
-                        }
-                    }
-                }
+                    vizinhosAtuais = minhasFuncoes.IdentificarVizinhos(index, posicaoAtual, tabuleiro);
                 else
-                    count++;
+                    bordas++;
 
-                if(posicaoAtual != '\n' && posicaoAtual != '\r' && posicaoAtual != '0' && posicaoAtual != '-')
+                if (posicaoAtual != '\n' && posicaoAtual != '\r' && posicaoAtual != '0' && posicaoAtual != '-')
                 {
-                    bool bombaEncontrada = false;
-                    int bombasVizinhas = 0;
-                    int quantidadeCasasFechadas = 0;
-                    List<int> casaFechadas = new List<int>();
-                    if (cima == '-')
-                    {
-                        casaFechadas.Add((i - count) - 9);
-                        quantidadeCasasFechadas++;
-                    }
-                    if (baixo == '-')
-                    {
-                        casaFechadas.Add((i - count) + 9);
-                        quantidadeCasasFechadas++;
-                    }
-                    if (esquerda == '-')
-                    {
-                        casaFechadas.Add((i - count) - 1);
-                        quantidadeCasasFechadas++;
-                    }
-                    if (direita == '-')
-                    {
-                        casaFechadas.Add((i - count) + 1);
-                        quantidadeCasasFechadas++;
-                    }
+                    valorCasaAtual = int.Parse(posicaoAtual.ToString());
+                    vizinhosFechados = minhasFuncoes.IdentificarVizinhosFechados(vizinhosAtuais, index, bordas);
+                    quantidadeCasasFechadas = vizinhosFechados.Count;
 
-
-                    if (diagonalInfDir == '-')
-                    {
-                        casaFechadas.Add((i - count) + 10);
-                        quantidadeCasasFechadas++;
-                    }
-                    if (diagonalInfEsq == '-')
-                    {
-                        casaFechadas.Add((i - count) + 8);
-                        quantidadeCasasFechadas++;
-                    }
-                    if (diagonalSupDir == '-')
-                    {
-                        casaFechadas.Add((i - count) - 8);
-                        quantidadeCasasFechadas++;
-                    }
-                    if (diagonalSupEsq == '-')
-                    {
-                        casaFechadas.Add((i - count) - 10);
-                        quantidadeCasasFechadas++;
-                    }
-
-                    int valorCasaAtual = int.Parse(posicaoAtual.ToString());
 
                     if (quantidadeCasasFechadas == valorCasaAtual)
                     {
-                        foreach (var casaVaga in casaFechadas)
+                        foreach (int vizinhoFechado in vizinhosFechados)
                         {
-                            if (!posicaoBombas.Contains(casaVaga))
+                            if (!bombasMarcadas.Contains(vizinhoFechado))
                             {
                                 bombaEncontrada = true;
-                                posicaoBombas.Add(casaVaga);
+                                bombasMarcadas.Add(vizinhoFechado);
                             }
 
                         }
 
-                        if(bombaEncontrada)
+                        if (bombaEncontrada)
                         {
-                            i = 0;
-                            count = 0;
+                            index = 0;
+                            bordas = 0;
                         }
                         else
                         {
-                            i++;
+                            index++;
                         }
 
                     }
-                    else if(quantidadeCasasFechadas > valorCasaAtual)
+                    else if (quantidadeCasasFechadas > valorCasaAtual)
                     {
-                        foreach (var bombas in posicaoBombas)
+                        foreach (var bombas in bombasMarcadas)
                         {
-                            if(casaFechadas.Contains(bombas))
+                            if (vizinhosFechados.Contains(bombas))
                             {
                                 quantidadeCasasFechadas--;
                                 bombasVizinhas++;
-                                casaFechadas.Remove(bombas);
+                                vizinhosFechados.Remove(bombas);
                             }
                         }
 
-                        if(bombasVizinhas == valorCasaAtual && quantidadeCasasFechadas > 0)
+                        if (bombasVizinhas == valorCasaAtual && quantidadeCasasFechadas > 0)
                         {
-                            foreach (var casaSegura in casaFechadas)
+                            foreach (int vizinhoFechado in vizinhosFechados)
                             {
-                                int linha = (int)(casaSegura / 9) + 1;
-                                int coluna = (casaSegura % 9) + 1;
+                                int linha = (int)(vizinhoFechado / 9) + 1;
+                                int coluna = (vizinhoFechado % 9) + 1;
                                 campoMinado.Abrir(linha, coluna);
+                                tabuleiro = campoMinado.Tabuleiro;
+
                                 Console.Clear();
-                                Console.WriteLine(campoMinado.Tabuleiro);
+                                Console.WriteLine($"A casa da linha {linha}, coluna {coluna} foi aberta!");
+                                Console.WriteLine(tabuleiro);
                                 Console.ReadKey();
                             }
-                            i = 0;
-                            count = 0;
+                            index = 0;
+                            bordas = 0;
                         }
                         else
                         {
-                            i++;
+                            index++;
                         }
                     }
                 }
                 else
                 {
-                    i++;
+                    index++;
                 }
-            } while (i < tamanho && campoMinado.JogoStatus == 0);
+            } while (index < tamanho && statusDoJogo == 0);
 
             Console.Clear();
-            Console.WriteLine(campoMinado.JogoStatus);
 
+            statusDoJogo = campoMinado.JogoStatus;
+            tabuleiro = campoMinado.Tabuleiro;
+
+            Console.WriteLine($"Status do jogo: {statusDoJogo}");
             Console.WriteLine("\n \n ");
-
-            Console.WriteLine(campoMinado.Tabuleiro);
+            Console.WriteLine($"{tabuleiro}");
+            Console.WriteLine("\nFim de jogo!");
 
             Console.ReadKey();
         }
