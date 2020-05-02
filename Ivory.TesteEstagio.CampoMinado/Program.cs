@@ -5,24 +5,27 @@ namespace Ivory.TesteEstagio.CampoMinado
 {
     class Vizinho
     {
-        public char cima, baixo;
-        public char esquerda, direita;
-        public char diagonalSupEsq, diagonalSupDir;
-        public char diagonalInfEsq, diagonalInfDir;
-
+        public char Cima { get; set; }
+        public char Baixo { get; set; }
+        public char Esquerda { get; set; }
+        public char Direita { get; set; }
+        public char DiagonalSupEsq { get; set; }
+        public char DiagonalSupDir { get; set; }
+        public char DiagonalInfEsq { get; set; }
+        public char DiagonalInfDir { get; set; }
         public Vizinho()
         {
-            cima = ' ';
-            baixo = ' ';
+            Cima = ' ';
+            Baixo = ' ';
 
-            esquerda = ' ';
-            direita = ' ';
+            Esquerda = ' ';
+            Direita = ' ';
 
-            diagonalSupEsq = ' ';
-            diagonalSupDir = ' ';
+            DiagonalSupEsq = ' ';
+            DiagonalSupDir = ' ';
 
-            diagonalInfEsq = ' ';
-            diagonalInfDir = ' ';
+            DiagonalInfEsq = ' ';
+            DiagonalInfDir = ' ';
         }
     }
 
@@ -32,159 +35,175 @@ namespace Ivory.TesteEstagio.CampoMinado
         {
             Vizinho vizinho = new Vizinho();
 
-
-            if (indexAtual >= 0 && indexAtual <= 10)//se for a primeira linha
+            //se for a primeira linha
+            if (indexAtual >= 0 && indexAtual <= 10)
             {
                 if (indexAtual == 0)
                 {
-                    vizinho.esquerda = '\n';
+                    vizinho.Esquerda = '\n';
                 }
                 else
                 {
-                    vizinho.esquerda = tabuleiro[indexAtual - 1];
+                    vizinho.Esquerda = tabuleiro[indexAtual - 1];
                 }
-                vizinho.cima = ' ';
-                vizinho.diagonalSupEsq = ' ';
-                vizinho.diagonalSupDir = ' ';
+                vizinho.Cima = ' ';
+                vizinho.DiagonalSupEsq = ' ';
+                vizinho.DiagonalSupDir = ' ';
 
-                vizinho.direita = tabuleiro[indexAtual + 1];
-                vizinho.baixo = tabuleiro[indexAtual + 11];
+                vizinho.Direita = tabuleiro[indexAtual + 1];
+                vizinho.Baixo = tabuleiro[indexAtual + 11];
             }
-            else if (indexAtual >= 87 && indexAtual <= 96)//se for a ultima linha
+            //se for a ultima linha
+            else if (indexAtual >= 87 && indexAtual <= 96)
             {
                 if (indexAtual == 96)
                 {
-                    vizinho.direita = '\r';
+                    vizinho.Direita = '\r';
                 }
                 else
                 {
-                    vizinho.direita = tabuleiro[indexAtual + 1];
+                    vizinho.Direita = tabuleiro[indexAtual + 1];
                 }
-                vizinho.baixo = ' ';
-                vizinho.diagonalInfEsq = ' ';
-                vizinho.diagonalInfDir = ' ';
+                vizinho.Baixo = ' ';
+                vizinho.DiagonalInfEsq = ' ';
+                vizinho.DiagonalInfDir = ' ';
 
-                vizinho.esquerda = tabuleiro[indexAtual - 1];
-                vizinho.cima = tabuleiro[indexAtual - 11];
+                vizinho.Esquerda = tabuleiro[indexAtual - 1];
+                vizinho.Cima = tabuleiro[indexAtual - 11];
             }
             else
             {
-                vizinho.cima = tabuleiro[indexAtual - 11];
-                vizinho.baixo = tabuleiro[indexAtual + 11];
+                vizinho.Cima = tabuleiro[indexAtual - 11];
+                vizinho.Baixo = tabuleiro[indexAtual + 11];
 
-                vizinho.direita = tabuleiro[indexAtual + 1];
-                vizinho.esquerda = tabuleiro[indexAtual - 1];
+                vizinho.Direita = tabuleiro[indexAtual + 1];
+                vizinho.Esquerda = tabuleiro[indexAtual - 1];
             }
 
-            if (vizinho.esquerda == '\n') // se tiver borda no lado esquerdo
+            // se tiver borda no lado esquerdo
+            if (vizinho.Esquerda == '\n') 
             {
-                vizinho.diagonalSupEsq = '\n';
-                vizinho.diagonalInfEsq = '\n';
+                vizinho.DiagonalSupEsq = '\n';
+                vizinho.DiagonalInfEsq = '\n';
 
-                if (vizinho.baixo == ' ') // se tiver borda no lado esquerdo e em baixo
+                // se tiver borda no lado esquerdo e em baixo
+                if (vizinho.Baixo == ' ') 
                 {
-                    vizinho.diagonalSupDir = tabuleiro[indexAtual - 10];
-                    vizinho.diagonalInfDir = ' ';
+                    vizinho.DiagonalSupDir = tabuleiro[indexAtual - 10];
+                    vizinho.DiagonalInfDir = ' ';
                 }
-                else if (vizinho.cima == ' ')// se tiver borda no lado esquerdo e em cima
+                // se tiver borda no lado esquerdo e em cima
+                else if (vizinho.Cima == ' ')
                 {
-                    vizinho.diagonalInfDir = tabuleiro[indexAtual + 12];
-                    vizinho.diagonalSupDir = ' ';
+                    vizinho.DiagonalInfDir = tabuleiro[indexAtual + 12];
+                    vizinho.DiagonalSupDir = ' ';
                 }
                 else
                 {
-                    vizinho.diagonalSupDir = tabuleiro[indexAtual - 10];
-                    vizinho.diagonalInfDir = tabuleiro[indexAtual + 12];
+                    vizinho.DiagonalSupDir = tabuleiro[indexAtual - 10];
+                    vizinho.DiagonalInfDir = tabuleiro[indexAtual + 12];
                 }
             }
-            else if (vizinho.direita == '\r') // se tiver borda no lado direito
+            // se tiver borda no lado direito
+            else if (vizinho.Direita == '\r')
             {
-                vizinho.diagonalSupDir = '\r';
-                vizinho.diagonalInfDir = '\r';
+                vizinho.DiagonalSupDir = '\r';
+                vizinho.DiagonalInfDir = '\r';
 
-                if (vizinho.baixo == ' ') // se tiver borda no lado direito e em baixo
+                // se tiver borda no lado direito e em baixo
+                if (vizinho.Baixo == ' ') 
                 {
-                    vizinho.diagonalSupEsq = tabuleiro[indexAtual - 12];
-                    vizinho.diagonalInfEsq = ' ';
+                    vizinho.DiagonalSupEsq = tabuleiro[indexAtual - 12];
+                    vizinho.DiagonalInfEsq = ' ';
                 }
-                else if (vizinho.cima == ' ') // se tiver borda no lado direito e em cima
+                // se tiver borda no lado direito e em cima
+                else if (vizinho.Cima == ' ') 
                 {
-                    vizinho.diagonalInfEsq = tabuleiro[indexAtual + 10];
-                    vizinho.diagonalSupEsq = ' ';
+                    vizinho.DiagonalInfEsq = tabuleiro[indexAtual + 10];
+                    vizinho.DiagonalSupEsq = ' ';
                 }
                 else
                 {
-                    vizinho.diagonalInfEsq = tabuleiro[indexAtual + 10];
-                    vizinho.diagonalSupEsq = tabuleiro[indexAtual - 12];
+                    vizinho.DiagonalInfEsq = tabuleiro[indexAtual + 10];
+                    vizinho.DiagonalSupEsq = tabuleiro[indexAtual - 12];
                 }
             }
             else
             {
-                if (vizinho.baixo == ' ') // se tiver borda em baixo
+                // se tiver borda em baixo
+                if (vizinho.Baixo == ' ') 
                 {
-                    vizinho.diagonalSupEsq = tabuleiro[indexAtual - 12];
-                    vizinho.diagonalSupDir = tabuleiro[indexAtual - 10];
+                    vizinho.DiagonalSupEsq = tabuleiro[indexAtual - 12];
+                    vizinho.DiagonalSupDir = tabuleiro[indexAtual - 10];
 
-                    vizinho.diagonalInfEsq = ' ';
-                    vizinho.diagonalInfDir = ' ';
+                    vizinho.DiagonalInfEsq = ' ';
+                    vizinho.DiagonalInfDir = ' ';
                 }
-                else if (vizinho.cima == ' ') // se tiver borda em cima
+                // se tiver borda em cima
+                else if (vizinho.Cima == ' ') 
                 {
-                    vizinho.diagonalInfDir = tabuleiro[indexAtual + 12];
-                    vizinho.diagonalInfEsq = tabuleiro[indexAtual + 10];
-                    vizinho.diagonalSupEsq = ' ';
-                    vizinho.diagonalSupDir = ' ';
+                    vizinho.DiagonalInfDir = tabuleiro[indexAtual + 12];
+                    vizinho.DiagonalInfEsq = tabuleiro[indexAtual + 10];
+
+                    vizinho.DiagonalSupEsq = ' ';
+                    vizinho.DiagonalSupDir = ' ';
                 }
                 else
                 {
-                    vizinho.diagonalInfDir = tabuleiro[indexAtual + 12];
-                    vizinho.diagonalInfEsq = tabuleiro[indexAtual + 10];
+                    vizinho.DiagonalInfDir = tabuleiro[indexAtual + 12];
+                    vizinho.DiagonalInfEsq = tabuleiro[indexAtual + 10];
 
-                    vizinho.diagonalSupDir = tabuleiro[indexAtual - 10];
-                    vizinho.diagonalSupEsq = tabuleiro[indexAtual - 12];
+                    vizinho.DiagonalSupDir = tabuleiro[indexAtual - 10];
+                    vizinho.DiagonalSupEsq = tabuleiro[indexAtual - 12];
                 }
             }
 
             return vizinho;
         }
-
         public List<int> IdentificarVizinhosFechados(Vizinho vizinhosAtuais, int indexAtual, int bordas)
         {
             List<int> vizinhosFechadas = new List<int>();
 
-            if (vizinhosAtuais.cima == '-')
+            if (vizinhosAtuais.Cima == '-')
+            {
                 vizinhosFechadas.Add((indexAtual - bordas) - 9);
-
-            if (vizinhosAtuais.baixo == '-')
+            }
+            if (vizinhosAtuais.Baixo == '-')
+            {
                 vizinhosFechadas.Add((indexAtual - bordas) + 9);
-
-            if (vizinhosAtuais.esquerda == '-')
+            }
+            if (vizinhosAtuais.Esquerda == '-')
+            {
                 vizinhosFechadas.Add((indexAtual - bordas) - 1);
-
-            if (vizinhosAtuais.direita == '-')
+            }
+            if (vizinhosAtuais.Direita == '-')
+            {
                 vizinhosFechadas.Add((indexAtual - bordas) + 1);
-
-            if (vizinhosAtuais.diagonalInfDir == '-')
+            }
+            if (vizinhosAtuais.DiagonalInfDir == '-')
+            {
                 vizinhosFechadas.Add((indexAtual - bordas) + 10);
-
-            if (vizinhosAtuais.diagonalInfEsq == '-')
+            }
+            if (vizinhosAtuais.DiagonalInfEsq == '-')
+            {
                 vizinhosFechadas.Add((indexAtual - bordas) + 8);
-
-            if (vizinhosAtuais.diagonalSupDir == '-')
+            }
+            if (vizinhosAtuais.DiagonalSupDir == '-')
+            {
                 vizinhosFechadas.Add((indexAtual - bordas) - 8);
-
-            if (vizinhosAtuais.diagonalSupEsq == '-')
+            }
+            if (vizinhosAtuais.DiagonalSupEsq == '-')
+            {
                 vizinhosFechadas.Add((indexAtual - bordas) - 10);
-
+            }
 
             return vizinhosFechadas;
         }
-
         public bool MarcaBomba(List<int> vizinhosFechados, List<int> listaDeBombas)
         {
             bool novaBombaEncontrada = false;
 
-            foreach (int vizinhoFechado in vizinhosFechados)
+            foreach (var vizinhoFechado in vizinhosFechados)
             {
                 if (!listaDeBombas.Contains(vizinhoFechado))
                 {
@@ -196,7 +215,6 @@ namespace Ivory.TesteEstagio.CampoMinado
 
             return novaBombaEncontrada;
         }
-
         public bool AvaliaAbrirVizinhos(List<int> bombasMarcadas, List<int> vizinhosFechados, int quantidadeCasasFechadas, int valorCasaAtual)
         {
             int bombasVizinhas = 0;
@@ -212,11 +230,16 @@ namespace Ivory.TesteEstagio.CampoMinado
             }
 
             if (bombasVizinhas == valorCasaAtual && quantidadeCasasFechadas > 0)
+            {
                 return true;
+            }
             else
+            {
                 return false;
+            }
         }
     }
+
     class Program
     {
         static void Main(string[] args)
@@ -231,7 +254,6 @@ namespace Ivory.TesteEstagio.CampoMinado
 
             Operacoes minhasOperacoes = new Operacoes();
             Vizinho vizinhosAtuais;
-
 
             string tabuleiro = campoMinado.Tabuleiro;
             int statusDoJogo = campoMinado.JogoStatus;
@@ -252,7 +274,6 @@ namespace Ivory.TesteEstagio.CampoMinado
             int valorCasaAtual;
 
             Console.ReadKey();
-
             do
             {
                 posicaoAtual = tabuleiro[index];
@@ -269,7 +290,6 @@ namespace Ivory.TesteEstagio.CampoMinado
                 else
                 {
                     valorCasaAtual = int.Parse(posicaoAtual.ToString());
-
                     vizinhosAtuais = minhasOperacoes.IdentificarVizinhos(index, tabuleiro);
                     vizinhosFechados = minhasOperacoes.IdentificarVizinhosFechados(vizinhosAtuais, index, bordas);
                     quantidadeCasasFechadas = vizinhosFechados.Count;
@@ -290,9 +310,10 @@ namespace Ivory.TesteEstagio.CampoMinado
                     else if (quantidadeCasasFechadas > valorCasaAtual)
                     {
                         podeAbrirVizinhos = minhasOperacoes.AvaliaAbrirVizinhos(bombasMarcadas, vizinhosFechados, quantidadeCasasFechadas, valorCasaAtual);
+
                         if (podeAbrirVizinhos)
                         {
-                            foreach (int vizinhoFechado in vizinhosFechados)
+                            foreach (var vizinhoFechado in vizinhosFechados)
                             {
                                 linha = (int)(vizinhoFechado / 9) + 1;
                                 coluna = (vizinhoFechado % 9) + 1;
