@@ -28,7 +28,7 @@ namespace Ivory.TesteEstagio.CampoMinado
 
     class Operacoes
     {
-        public Vizinho IdentificarVizinhos(int indexAtual, char posicaoAtual, string tabuleiro)
+        public Vizinho IdentificarVizinhos(int indexAtual, string tabuleiro)
         {
             Vizinho vizinho = new Vizinho();
 
@@ -180,9 +180,41 @@ namespace Ivory.TesteEstagio.CampoMinado
             return vizinhosFechadas;
         }
 
-        public void AnalisarVizinhosFechados()
+        public bool MarcaBomba(List<int> vizinhosFechados, List<int> listaDeBombas)
         {
+            bool novaBombaEncontrada = false;
 
+            foreach (int vizinhoFechado in vizinhosFechados)
+            {
+                if (!listaDeBombas.Contains(vizinhoFechado))
+                {
+                    novaBombaEncontrada = true;
+                    listaDeBombas.Add(vizinhoFechado);
+                }
+
+            }
+
+            return novaBombaEncontrada;
+        }
+
+        public bool AvaliaAbrirVizinhos(List<int> bombasMarcadas, List<int> vizinhosFechados, int quantidadeCasasFechadas, int valorCasaAtual)
+        {
+            int bombasVizinhas = 0;
+
+            foreach (var bombas in bombasMarcadas)
+            {
+                if (vizinhosFechados.Contains(bombas))
+                {
+                    quantidadeCasasFechadas--;
+                    bombasVizinhas++;
+                    vizinhosFechados.Remove(bombas);
+                }
+            }
+
+            if (bombasVizinhas == valorCasaAtual && quantidadeCasasFechadas > 0)
+                return true;
+            else
+                return false;
         }
     }
     class Program
@@ -192,66 +224,60 @@ namespace Ivory.TesteEstagio.CampoMinado
             var campoMinado = new CampoMinado();
             Console.WriteLine("Início do jogo\n=========");
             Console.WriteLine(campoMinado.Tabuleiro);
+
             // Realize sua codificação a partir deste ponto, boa sorte!
+            List<int> bombasMarcadas = new List<int>();
+            List<int> vizinhosFechados;
+
+            Operacoes minhasOperacoes = new Operacoes();
+            Vizinho vizinhosAtuais;
+
 
             string tabuleiro = campoMinado.Tabuleiro;
             int statusDoJogo = campoMinado.JogoStatus;
 
-            Operacoes minhasFuncoes = new Operacoes();
-            Vizinho vizinhosAtuais = new Vizinho();
+            int tamanho = tabuleiro.Length;
 
-
-            List<int> bombasMarcadas = new List<int>();
-
-            List<int> vizinhosFechados = new List<int>();
-
-            bool bombaEncontrada;
-            int bombasVizinhas;
+            bool novaBombaEncontrada;
+            bool podeAbrirVizinhos;
             int quantidadeCasasFechadas;
 
-            int tamanho = campoMinado.Tabuleiro.Length;
             int bordas = 0;
             int index = 0;
+
+            int linha;
+            int coluna;
 
             char posicaoAtual;
             int valorCasaAtual;
 
+            Console.ReadKey();
 
             do
             {
-                bombaEncontrada = false;
-                bombasVizinhas = 0;
-
-                vizinhosAtuais = new Vizinho();
                 posicaoAtual = tabuleiro[index];
-                
-
-
-                if (!(posicaoAtual == '\n' || posicaoAtual == '\r'))
-                    vizinhosAtuais = minhasFuncoes.IdentificarVizinhos(index, posicaoAtual, tabuleiro);
-                else
+                // Analisa se a posição atual é borda, casa fechada ou número maior do que 0;
+                if (posicaoAtual == '\n' || posicaoAtual == '\r')
+                {
                     bordas++;
-
-                if (posicaoAtual != '\n' && posicaoAtual != '\r' && posicaoAtual != '0' && posicaoAtual != '-')
+                    index++;
+                }
+                else if (posicaoAtual == '0' || posicaoAtual == '-')
+                {
+                    index++;
+                }
+                else
                 {
                     valorCasaAtual = int.Parse(posicaoAtual.ToString());
-                    vizinhosFechados = minhasFuncoes.IdentificarVizinhosFechados(vizinhosAtuais, index, bordas);
-                    quantidadeCasasFechadas = vizinhosFechados.Count;
 
+                    vizinhosAtuais = minhasOperacoes.IdentificarVizinhos(index, tabuleiro);
+                    vizinhosFechados = minhasOperacoes.IdentificarVizinhosFechados(vizinhosAtuais, index, bordas);
+                    quantidadeCasasFechadas = vizinhosFechados.Count;
 
                     if (quantidadeCasasFechadas == valorCasaAtual)
                     {
-                        foreach (int vizinhoFechado in vizinhosFechados)
-                        {
-                            if (!bombasMarcadas.Contains(vizinhoFechado))
-                            {
-                                bombaEncontrada = true;
-                                bombasMarcadas.Add(vizinhoFechado);
-                            }
-
-                        }
-
-                        if (bombaEncontrada)
+                        novaBombaEncontrada = minhasOperacoes.MarcaBomba(vizinhosFechados, bombasMarcadas);
+                        if (novaBombaEncontrada)
                         {
                             index = 0;
                             bordas = 0;
@@ -260,26 +286,17 @@ namespace Ivory.TesteEstagio.CampoMinado
                         {
                             index++;
                         }
-
                     }
                     else if (quantidadeCasasFechadas > valorCasaAtual)
                     {
-                        foreach (var bombas in bombasMarcadas)
-                        {
-                            if (vizinhosFechados.Contains(bombas))
-                            {
-                                quantidadeCasasFechadas--;
-                                bombasVizinhas++;
-                                vizinhosFechados.Remove(bombas);
-                            }
-                        }
-
-                        if (bombasVizinhas == valorCasaAtual && quantidadeCasasFechadas > 0)
+                        podeAbrirVizinhos = minhasOperacoes.AvaliaAbrirVizinhos(bombasMarcadas, vizinhosFechados, quantidadeCasasFechadas, valorCasaAtual);
+                        if (podeAbrirVizinhos)
                         {
                             foreach (int vizinhoFechado in vizinhosFechados)
                             {
-                                int linha = (int)(vizinhoFechado / 9) + 1;
-                                int coluna = (vizinhoFechado % 9) + 1;
+                                linha = (int)(vizinhoFechado / 9) + 1;
+                                coluna = (vizinhoFechado % 9) + 1;
+
                                 campoMinado.Abrir(linha, coluna);
                                 tabuleiro = campoMinado.Tabuleiro;
 
@@ -296,10 +313,6 @@ namespace Ivory.TesteEstagio.CampoMinado
                             index++;
                         }
                     }
-                }
-                else
-                {
-                    index++;
                 }
             } while (index < tamanho && statusDoJogo == 0);
 
